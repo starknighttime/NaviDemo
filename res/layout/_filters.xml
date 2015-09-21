@@ -1,0 +1,72 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    tools:context="com.Insep.navidemo.MainActivity" >
+
+    <ImageView
+        android:id="@+id/top_tourdguide"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:adjustViewBounds="true"
+        android:onClick="showTourGuide"
+        android:layout_margin="0dp"
+        android:src="@drawable/icon_top_logo_actived" />
+
+    <ImageView
+        android:id="@+id/top_food"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.2"
+        android:adjustViewBounds="true"
+        android:onClick="showFood"
+        android:src="@drawable/icon_top_food_active" />
+
+    <ImageView
+        android:id="@+id/top_shopping"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="2.2"
+        android:adjustViewBounds="true"
+        android:onClick="showShopping"
+        android:src="@drawable/icon_top_shopping_active" />
+    <ImageView
+        android:id="@+id/top_restaurants"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.1"
+        android:adjustViewBounds="true"
+        android:onClick="showRestaurants"
+        android:visibility="gone"
+        android:src="@drawable/icon_top_restaurants_inactive" />
+    <ImageView
+        android:id="@+id/top_stores"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.1"
+        android:adjustViewBounds="true"
+        android:onClick="showStores"
+        android:visibility="gone"
+        android:src="@drawable/icon_top_stores_inactive" />
+    <ImageView
+        android:id="@+id/top_washrooms"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.1"
+        android:layout_marginEnd="2dp"
+        android:adjustViewBounds="true"
+        android:onClick="showWashrooms"
+        android:visibility="gone"
+        android:src="@drawable/icon_top_washrooms_inactive" />
+    <ImageView
+        android:id="@+id/top_attractions"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1.1"
+        android:adjustViewBounds="true"
+        android:onClick="showAttractions"
+        android:visibility="gone"
+        android:src="@drawable/icon_top_attractions_active" />
+
+</LinearLayout>

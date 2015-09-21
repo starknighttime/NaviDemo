@@ -1,0 +1,26 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.Insep.navidemo.MainActivity" >
+
+    <item
+        android:id="@+id/actionbar_flag"
+        android:icon="@drawable/icon_actionbar_flag"
+        android:showAsAction="always"
+        android:title="@string/actionbar_flag"/>
+    <item
+        android:id="@+id/actionbar_search"
+        android:actionViewClass="android.widget.SearchView"
+        android:showAsAction="always"
+        android:title="@string/actionbar_search"/>
+    <item
+        android:id="@+id/actionbar_notification"
+        android:icon="@drawable/icon_actionbar_notification"
+        android:showAsAction="always"
+        android:title="@string/actionbar_notification"/>
+    <item
+        android:id="@+id/actionbar_user"
+        android:icon="@drawable/icon_actionbar_user"
+        android:showAsAction="always"
+        android:title="@string/actionbar_user"/>
+
+</menu>

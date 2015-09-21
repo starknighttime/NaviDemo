@@ -1,0 +1,106 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    tools:context="com.Insep.navidemo.MainActivity" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F1F1F1"
+        android:gravity="center_vertical"
+        android:padding="1dp" >
+
+        <ImageView
+            android:id="@+id/navi_insep"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:onClick="actionNaviInsep"
+            android:src="@drawable/icon_navi_insep" />
+
+        <ImageView
+            android:id="@+id/navi_shopping"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:onClick="actionNaviShopping"
+            android:src="@drawable/icon_navi_shopping" />
+
+        <ImageView
+            android:id="@+id/navi_menu"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:onClick="actionNaviMenu"
+            android:src="@drawable/icon_navi_menu" />
+
+        <ImageView
+            android:id="@+id/navi_taxi"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:onClick="actionNaviTaxi"
+            android:src="@drawable/icon_navi_taxi" />
+
+        <ImageView
+            android:id="@+id/navi_data_traffic"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:onClick="actionNaviData"
+            android:src="@drawable/icon_navi_data" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ly_navi_second_line"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#F1F1F1"
+        android:gravity="center_vertical"
+        android:padding="1dp"
+        android:visibility="gone" >
+
+        <ImageView
+            android:id="@+id/navi_team"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:onClick="actionNaviTeam"
+            android:src="@drawable/icon_navi_team" />
+
+        <ImageView
+            android:id="@+id/navi_share_loc"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:onClick="actionNaviShareLoc"
+            android:src="@drawable/icon_navi_share_loc" />
+
+        <ImageView
+            android:id="@+id/navi_route"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:onClick="actionNaviRoute"
+            android:src="@drawable/icon_navi_route" />
+
+        <ImageView
+            android:id="@+id/navi_sos"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:onClick="actionNaviSOS"
+            android:src="@drawable/icon_navi_sos" />
+
+        <ImageView
+            android:id="@+id/navi_setting"
+            android:layout_width="0dp"
+            android:layout_height="48dp"
+            android:layout_weight="1"
+            android:onClick="actionNaviSetting"
+            android:src="@drawable/icon_navi_setting" />
+    </LinearLayout>
+
+</LinearLayout>
