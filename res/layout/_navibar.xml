@@ -26,7 +26,7 @@
             android:layout_height="48dp"
             android:layout_weight="1"
             android:onClick="actionNaviShopping"
-            android:src="@drawable/icon_navi_shopping" />
+            android:src="@drawable/icon_navi_activities" />
 
         <ImageView
             android:id="@+id/navi_menu"

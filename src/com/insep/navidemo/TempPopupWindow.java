@@ -27,7 +27,7 @@ public class TempPopupWindow extends PopupWindow {
 		this.position = position;
 		contentView = inflater.inflate(R.layout._temp_window, null);
 		this.setContentView(contentView);
-		this.setFocusable(true);
+		//this.setFocusable(true);
 		this.setOutsideTouchable(true);
 		contentView.setOnClickListener(new OnClickListener() {
 
@@ -44,7 +44,8 @@ public class TempPopupWindow extends PopupWindow {
 			this.setHeight(1200);
 			this.update();
 			// 以下拉方式显示popupwindow
-
+			ImageView tempView = (ImageView) contentView
+					.findViewById(R.id.pop_image);
 			// tempView.setImageBitmap(BitmapDescriptorFactory.fromResource(
 			// R.drawable.login_demo).getBitmap());
 			this.showAtLocation(parent, Gravity.CENTER, 0, 137);

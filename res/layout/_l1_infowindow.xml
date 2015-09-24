@@ -6,7 +6,7 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/tv_l1_title"
+        android:id="@+id/tv_marker_title"
         android:layout_width="340dp"
         android:layout_height="180dp"
         android:adjustViewBounds="true"

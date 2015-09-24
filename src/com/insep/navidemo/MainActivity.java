@@ -44,18 +44,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements InfoWindowAdapter,
-		LocationSource, AMapLocationListener, OnRouteSearchListener {
+		LocationSource, AMapLocationListener {
 	private AMap aMap;
 	private MapView mapview;
 	private Marker selectedMarker;
 	private OnLocationChangedListener mListener;
 	private LocationManagerProxy mAMapLocationManager;
-	private RouteSearch routeSearch;
-	private WalkRouteResult walkRouteResult;
-	private WalkRouteOverlay walkRouteOverlay;
 	private LatLonPoint curPoint;
 
 	private EditText latLng;
+	private ImageView actionbarFlag;
+	private ImageView actionbarNotification;
 	private ImageView topFood;
 	private ImageView topShopping;
 	private ImageView topAttractions;
@@ -74,6 +73,10 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 	private ArrayList<Marker> l2_stores;
 	private ArrayList<Marker> l2_restaurants;
 	private ArrayList<Marker> l2_washrooms;
+	private ArrayList<Marker> l3_attractions;
+	private ArrayList<Marker> l3_stores;
+	private ArrayList<Marker> l3_restaurants;
+	private ArrayList<Marker> l3_washrooms;
 
 	private boolean topFoodShown = true;
 	private boolean topShoppingShown = true;
@@ -91,13 +94,15 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 		setContentView(R.layout.activity_main);
 		this.getActionBar().hide();
 		initComponent(savedInstanceState);
-		initMap();
 		initMarkers();
+		refreshCamera();
 	}
 
 	private void initComponent(Bundle savedInstanceState) {
 		mapview = (MapView) findViewById(R.id.mapView);
 		latLng = (EditText) findViewById(R.id.et_search);
+		actionbarFlag = (ImageView) findViewById(R.id.actionbar_flag);
+		actionbarNotification = (ImageView) findViewById(R.id.actionbar_notification);
 		topFood = (ImageView) findViewById(R.id.top_food);
 		topShopping = (ImageView) findViewById(R.id.top_shopping);
 		topAttractions = (ImageView) findViewById(R.id.top_attractions);
@@ -132,19 +137,16 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 		});
 		MyLocationStyle myLocationStyle = new MyLocationStyle();
 		myLocationStyle.myLocationIcon(BitmapDescriptorFactory
-				.fromResource(R.drawable.location_marker));// 设置小蓝点的图标
-		myLocationStyle.strokeColor(Color.BLACK);// 设置圆形的边框颜色
-		myLocationStyle.radiusFillColor(Color.argb(100, 0, 0, 180));// 设置圆形的填充颜色
-		myLocationStyle.strokeWidth(1.0f);// 设置圆形的边框粗细
+				.fromResource(R.drawable.location_marker));
+		myLocationStyle.strokeColor(Color.BLACK);
+		myLocationStyle.radiusFillColor(Color.argb(100, 0, 0, 180));
+		myLocationStyle.strokeWidth(1.0f);
 		aMap.setMyLocationStyle(myLocationStyle);
-		aMap.setLocationSource(this);// 设置定位监听
-		aMap.getUiSettings().setMyLocationButtonEnabled(false);// 设置默认定位按钮是否显示
-		aMap.setMyLocationEnabled(true);// 设置为true表示显示定位层并可触发定位，false表示隐藏定位层并不可触发定位，默认是false
-		routeSearch = new RouteSearch(MainActivity.this);
-		routeSearch.setRouteSearchListener(MainActivity.this);
-		tPopWindow = new TempPopupWindow(MainActivity.this, 1);
+		aMap.setLocationSource(this);
+		aMap.getUiSettings().setMyLocationButtonEnabled(false);
+		aMap.setMyLocationEnabled(true);
 	}
-
+	
 	private void initMarkers() {
 		final MarkersList ml = new MarkersList(MainActivity.this.getResources());
 		l1_attractions = new ArrayList<Marker>();
@@ -203,13 +205,40 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 			l2_washrooms.add(aMap.addMarker(t.markerOption));
 			l2_washrooms.get(i).setObject(t.description);
 		}
+		l3_attractions = new ArrayList<Marker>();
+		temp = ml.getL3Attractions();
+		j = temp.size();
+		for (int i = 0; i < j; i++) {
+			final MarkersList.MarkerInfo t = temp.get(i);
+			l3_attractions.add(aMap.addMarker(t.markerOption));
+			l3_attractions.get(i).setObject(t.description);
+		}
+		l3_stores = new ArrayList<Marker>();
+		temp = ml.getL3Stores();
+		j = temp.size();
+		for (int i = 0; i < j; i++) {
+			final MarkersList.MarkerInfo t = temp.get(i);
+			l3_stores.add(aMap.addMarker(t.markerOption));
+			l3_stores.get(i).setObject(t.description);
+		}
+		l3_restaurants = new ArrayList<Marker>();
+		temp = ml.getL3Restaurants();
+		j = temp.size();
+		for (int i = 0; i < j; i++) {
+			final MarkersList.MarkerInfo t = temp.get(i);
+			l3_restaurants.add(aMap.addMarker(t.markerOption));
+			l3_restaurants.get(i).setObject(t.description);
+		}
+		l3_washrooms = new ArrayList<Marker>();
+		temp = ml.getL3Washrooms();
+		j = temp.size();
+		for (int i = 0; i < j; i++) {
+			final MarkersList.MarkerInfo t = temp.get(i);
+			l3_washrooms.add(aMap.addMarker(t.markerOption));
+			l3_washrooms.get(i).setObject(t.description);
+		}
 		temp.clear();
 		aMap.invalidate();
-	}
-
-	private void initMap() {
-		aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(1.352222,
-				103.826294), 12));
 	}
 
 	@Override
@@ -228,9 +257,19 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 
 	// TODO Action bar
 	public void actionFlag(final View v) {
+		if (mapLevel > 1) {
+			refreshMap(false);
+			if (mapLevel == 1) {
+				((ImageView) v)
+						.setImageResource(R.drawable.icon_actionbar_flag);
+			}
+		}
 	}
 
 	public void actionNotification(final View v) {
+		tPopWindow = new TempPopupWindow(MainActivity.this, 1);
+		tPopWindow
+				.showPopupWindow(MainActivity.this.findViewById(R.id.mapView));
 	}
 
 	public void actionUserProfile(final View v) {
@@ -269,9 +308,20 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 		((ImageView) v)
 				.setImageResource(topAttractionsShown ? R.drawable.icon_top_attractions_active
 						: R.drawable.icon_top_attractions_inactive);
-		int temp = l2_attractions.size();
-		for (int i = 0; i < temp; i++) {
-			l2_attractions.get(i).setVisible(topAttractionsShown);
+		int temp;
+		switch (mapLevel) {
+		case 2:
+			temp = l2_attractions.size();
+			for (int i = 0; i < temp; i++) {
+				l2_attractions.get(i).setVisible(topAttractionsShown);
+			}
+			break;
+		case 3:
+			temp = l3_attractions.size();
+			for (int i = 0; i < temp; i++) {
+				l3_attractions.get(i).setVisible(topAttractionsShown);
+			}
+			break;
 		}
 		aMap.invalidate();
 	}
@@ -281,9 +331,20 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 		((ImageView) v)
 				.setImageResource(topRestaurantsShown ? R.drawable.icon_top_restaurants_active
 						: R.drawable.icon_top_restaurants_inactive);
-		int temp = l2_restaurants.size();
-		for (int i = 0; i < temp; i++) {
-			l2_restaurants.get(i).setVisible(topRestaurantsShown);
+		int temp;
+		switch (mapLevel) {
+		case 2:
+			temp = l2_restaurants.size();
+			for (int i = 0; i < temp; i++) {
+				l2_restaurants.get(i).setVisible(topRestaurantsShown);
+			}
+			break;
+		case 3:
+			temp = l3_restaurants.size();
+			for (int i = 0; i < temp; i++) {
+				l3_restaurants.get(i).setVisible(topRestaurantsShown);
+			}
+			break;
 		}
 		aMap.invalidate();
 	}
@@ -293,9 +354,20 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 		((ImageView) v)
 				.setImageResource(topStoresShown ? R.drawable.icon_top_stores_active
 						: R.drawable.icon_top_stores_inactive);
-		int temp = l2_stores.size();
-		for (int i = 0; i < temp; i++) {
-			l2_stores.get(i).setVisible(topStoresShown);
+		int temp;
+		switch (mapLevel) {
+		case 2:
+			temp = l2_stores.size();
+			for (int i = 0; i < temp; i++) {
+				l2_stores.get(i).setVisible(topStoresShown);
+			}
+			break;
+		case 3:
+			temp = l3_stores.size();
+			for (int i = 0; i < temp; i++) {
+				l3_stores.get(i).setVisible(topStoresShown);
+			}
+			break;
 		}
 		aMap.invalidate();
 	}
@@ -305,9 +377,20 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 		((ImageView) v)
 				.setImageResource(topWashroomsShown ? R.drawable.icon_top_washrooms_active
 						: R.drawable.icon_top_washrooms_inactive);
-		int temp = l2_washrooms.size();
-		for (int i = 0; i < temp; i++) {
-			l2_washrooms.get(i).setVisible(topWashroomsShown);
+		int temp;
+		switch (mapLevel) {
+		case 2:
+			temp = l2_washrooms.size();
+			for (int i = 0; i < temp; i++) {
+				l2_washrooms.get(i).setVisible(topWashroomsShown);
+			}
+			break;
+		case 3:
+			temp = l3_washrooms.size();
+			for (int i = 0; i < temp; i++) {
+				l3_washrooms.get(i).setVisible(topWashroomsShown);
+			}
+			break;
 		}
 		aMap.invalidate();
 	}
@@ -317,6 +400,9 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 	}
 
 	public void actionNaviShopping(final View v) {
+		tPopWindow = new TempPopupWindow(MainActivity.this, 2);
+		tPopWindow
+				.showPopupWindow(MainActivity.this.findViewById(R.id.mapView));
 	}
 
 	public void actionNaviMenu(final View v) {
@@ -327,7 +413,7 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 	}
 
 	public void actionNaviTaxi(final View v) {
-
+		tPopWindow = new TempPopupWindow(MainActivity.this, 3);
 		tPopWindow
 				.showPopupWindow(MainActivity.this.findViewById(R.id.mapView));
 	}
@@ -336,31 +422,36 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 	}
 
 	public void actionNaviTeam(final View v) {
+		tPopWindow = new TempPopupWindow(MainActivity.this, 4);
+		tPopWindow
+				.showPopupWindow(MainActivity.this.findViewById(R.id.mapView));
 	}
 
 	public void actionNaviShareLoc(final View v) {
+		tPopWindow = new TempPopupWindow(MainActivity.this, 5);
+		tPopWindow
+				.showPopupWindow(MainActivity.this.findViewById(R.id.mapView));
 	}
 
 	public void actionNaviRoute(final View v) {
+
 	}
 
 	public void actionNaviSOS(final View v) {
+		tPopWindow = new TempPopupWindow(MainActivity.this, 6);
+		tPopWindow
+				.showPopupWindow(MainActivity.this.findViewById(R.id.mapView));
 	}
 
 	public void actionNaviData(final View v) {
+		tPopWindow = new TempPopupWindow(MainActivity.this, 7);
+		tPopWindow
+				.showPopupWindow(MainActivity.this.findViewById(R.id.mapView));
 	}
 
 	// TODO MarkerFunc
 	public void markerFuncNavigation(final View v) {
-		if (curPoint != null) {
-			selectedMarker.hideInfoWindow();
-			searchRouteResult(new LatLonPoint(
-					selectedMarker.getPosition().latitude,
-					selectedMarker.getPosition().longitude));
-		} else {
-			Toast.makeText(MainActivity.this, "Couldn't Get Your Location",
-					Toast.LENGTH_SHORT).show();
-		}
+
 	}
 
 	public void markerFunc360cam(final View v) {
@@ -375,21 +466,112 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 	public void markerFuncInterpretation(final View v) {
 	}
 
+	public void markerFunDescription(final View v) {
+	}
+
 	public void markerFuncActivity(final View v) {
 	}
 
-	public void markerFuncZoomIn(final View v) {
+	public void markerFuncTicket(final View v) {
+	}
 
-		switch (mapLevel) {
-		case 1:
-			mapLevel = 2;
-			refreshFilters();
+	public void markerFuncOnlineQueue(final View v) {
+	}
+
+	public void markerFuncZoomIn(final View v) {
+		refreshMap(true);
+
+	}
+
+	private void refreshMap(boolean zoomIn) {
+		if (selectedMarker != null) {
 			selectedMarker.hideInfoWindow();
 			selectedMarker = null;
+		}
+		if (zoomIn) {
+			mapLevel++;
+		} else {
+			mapLevel--;
+		}
+		refreshFilters();
+		refreshCamera();
+		refreshMarkers();
+		aMap.invalidate();
+	}
 
+	private void refreshFilters() {
+		switch (mapLevel) {
+		case 1:
+			topFood.setVisibility(View.VISIBLE);
+			topShopping.setVisibility(View.VISIBLE);
+			topAttractions.setVisibility(View.GONE);
+			topStores.setVisibility(View.GONE);
+			topRestaurants.setVisibility(View.GONE);
+			topWashrooms.setVisibility(View.GONE);
+			break;
+		case 2:
+			topFood.setVisibility(View.GONE);
+			topShopping.setVisibility(View.GONE);
+			topAttractions.setVisibility(View.VISIBLE);
+			topStores.setVisibility(View.VISIBLE);
+			topRestaurants.setVisibility(View.VISIBLE);
+			topWashrooms.setVisibility(View.VISIBLE);
+			break;
+		}
+	}
+
+	private void refreshCamera() {
+		switch (mapLevel) {
+		case 1:
 			aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-					1.253547, 103.824401), 16));
-			int temp = l1_attractions.size();
+					1.352222, 103.826294), 12));
+			break;
+		case 2:
+			aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
+					1.253547, 103.824401), 15));
+			break;
+		case 3:
+			aMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
+					1.254307, 103.823112), 17));
+			break;
+		}
+	}
+
+	private void refreshMarkers() {
+		int temp;
+		switch (mapLevel) {
+		case 1:
+			temp = l1_attractions.size();
+			for (int i = 0; i < temp; i++) {
+				l1_attractions.get(i).setVisible(true);
+			}
+			temp = l1_shopping.size();
+			for (int i = 0; i < temp; i++) {
+				l1_shopping.get(i).setVisible(topFoodShown);
+			}
+			temp = l1_food.size();
+			for (int i = 0; i < temp; i++) {
+				l1_food.get(i).setVisible(topShoppingShown);
+			}
+			temp = l2_attractions.size();
+			for (int i = 0; i < temp; i++) {
+				l2_attractions.get(i).setVisible(false);
+			}
+			temp = l2_stores.size();
+			for (int i = 0; i < temp; i++) {
+				l2_stores.get(i).setVisible(false);
+			}
+			temp = l2_restaurants.size();
+			for (int i = 0; i < temp; i++) {
+				l2_restaurants.get(i).setVisible(false);
+			}
+			temp = l2_washrooms.size();
+			for (int i = 0; i < temp; i++) {
+				l2_washrooms.get(i).setVisible(false);
+			}
+			break;
+		case 2:
+			temp = l1_attractions.size();
 			for (int i = 0; i < temp; i++) {
 				l1_attractions.get(i).setVisible(false);
 			}
@@ -403,29 +585,73 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 			}
 			temp = l2_attractions.size();
 			for (int i = 0; i < temp; i++) {
-				l2_attractions.get(i).setVisible(true);
+				l2_attractions.get(i).setVisible(topAttractionsShown);
+			}
+			temp = l2_stores.size();
+			for (int i = 0; i < temp; i++) {
+				l2_stores.get(i).setVisible(topStoresShown);
+			}
+			temp = l2_restaurants.size();
+			for (int i = 0; i < temp; i++) {
+				l2_restaurants.get(i).setVisible(topRestaurantsShown);
+			}
+			temp = l2_washrooms.size();
+			for (int i = 0; i < temp; i++) {
+				l2_washrooms.get(i).setVisible(topWashroomsShown);
+			}
+			temp = l3_attractions.size();
+			for (int i = 0; i < temp; i++) {
+				l3_attractions.get(i).setVisible(false);
+			}
+			temp = l3_stores.size();
+			for (int i = 0; i < temp; i++) {
+				l3_stores.get(i).setVisible(false);
+			}
+			temp = l3_restaurants.size();
+			for (int i = 0; i < temp; i++) {
+				l3_restaurants.get(i).setVisible(false);
+			}
+			temp = l3_washrooms.size();
+			for (int i = 0; i < temp; i++) {
+				l3_washrooms.get(i).setVisible(false);
 			}
 			break;
-		case 2:
+		case 3:
+			temp = l2_attractions.size();
+			for (int i = 0; i < temp; i++) {
+				l2_attractions.get(i).setVisible(false);
+			}
+			temp = l2_stores.size();
+			for (int i = 0; i < temp; i++) {
+				l2_stores.get(i).setVisible(false);
+			}
+			temp = l2_restaurants.size();
+			for (int i = 0; i < temp; i++) {
+				l2_restaurants.get(i).setVisible(false);
+			}
+			temp = l2_washrooms.size();
+			for (int i = 0; i < temp; i++) {
+				l2_washrooms.get(i).setVisible(false);
+			}
+			temp = l3_attractions.size();
+			for (int i = 0; i < temp; i++) {
+				l3_attractions.get(i).setVisible(topAttractionsShown);
+			}
+			temp = l3_stores.size();
+			for (int i = 0; i < temp; i++) {
+				l3_stores.get(i).setVisible(topStoresShown);
+			}
+			temp = l3_restaurants.size();
+			for (int i = 0; i < temp; i++) {
+				l3_restaurants.get(i).setVisible(topRestaurantsShown);
+			}
+			temp = l3_washrooms.size();
+			for (int i = 0; i < temp; i++) {
+				l3_washrooms.get(i).setVisible(topWashroomsShown);
+			}
 			break;
 		}
-		aMap.invalidate();
-	}
-
-	private void refreshFilters() {
-		switch (mapLevel) {
-		case 1:
-			break;
-		case 2:
-			topFood.setVisibility(View.GONE);
-			topShopping.setVisibility(View.GONE);
-			topAttractions.setVisibility(View.VISIBLE);
-			topStores.setVisibility(View.VISIBLE);
-			topRestaurants.setVisibility(View.VISIBLE);
-			topWashrooms.setVisibility(View.VISIBLE);
-			break;
-		}
-	}
+	};
 
 	// TODO Custom info window
 	@Override
@@ -437,66 +663,36 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 	public View getInfoWindow(Marker marker) {
 		View infoWindow = null;
 		TextView vt = null;
-		switch (mapLevel) {
+		switch (Integer.valueOf(marker.getObject().toString().substring(0, 1))) {
+		case 0:
+			return getLayoutInflater().inflate(R.layout._washroom, null);
 		case 1:
-			infoWindow = getLayoutInflater().inflate(R.layout._l1_infowindow,
-					null);
-			vt = (TextView) infoWindow.findViewById(R.id.tv_l1_title);
-			vt.setText(marker.getTitle());
-			vt.setBackgroundResource(MainActivity.this.getResources()
-					.getIdentifier("photo_" + marker.getObject().toString(),
-							"drawable", "com.insep.navidemo"));
+			infoWindow = getLayoutInflater().inflate(
+					R.layout._store_and_restaurant, null);
 			break;
 		case 2:
-			switch (Integer.valueOf(marker.getObject().toString()
-					.substring(0, 1))) {
-			case 0:
-				infoWindow = getLayoutInflater().inflate(R.layout._l2_washroom,
-						null);
-				break;
-			case 1:
-				infoWindow = getLayoutInflater().inflate(
-						R.layout._l2_store_and_restaurant, null);
-				vt = (TextView) infoWindow.findViewById(R.id.tv_l2_title);
-				vt.setText(marker.getTitle());
-				vt.setBackgroundResource(MainActivity.this.getResources()
-						.getIdentifier(
-								"photo_"
-										+ marker.getObject().toString()
-												.substring(1), "drawable",
-								"com.insep.navidemo"));
-				break;
-			case 2:
-				break;
-			case 3:
-				infoWindow = getLayoutInflater().inflate(
-						R.layout._l2_infowindow, null);
-				vt = (TextView) infoWindow.findViewById(R.id.tv_l2_title);
-				vt.setText(marker.getTitle());
-				vt.setBackgroundResource(MainActivity.this.getResources()
-						.getIdentifier(
-								"photo_"
-										+ marker.getObject().toString()
-												.substring(1), "drawable",
-								"com.insep.navidemo"));
-				break;
-			case 4:
-				infoWindow = getLayoutInflater().inflate(
-						R.layout._l2_attraction, null);
-				vt = (TextView) infoWindow.findViewById(R.id.tv_l2_title);
-				vt.setText(marker.getTitle());
-				vt.setBackgroundResource(MainActivity.this.getResources()
-						.getIdentifier(
-								"photo_"
-										+ marker.getObject().toString()
-												.substring(1), "drawable",
-								"com.insep.navidemo"));
-				break;
-			}
+			infoWindow = getLayoutInflater().inflate(R.layout._l1_infowindow,
+					null);
+			break;
+		case 3:
+			infoWindow = getLayoutInflater().inflate(R.layout._l2_infowindow,
+					null);
+			break;
+		case 4:
+			infoWindow = getLayoutInflater().inflate(R.layout._l2_attraction,
+					null);
+			break;
+		case 6:
+			infoWindow = getLayoutInflater().inflate(R.layout._l3_attraction,
+					null);
 			break;
 		}
-
-		vt = null;
+		vt = (TextView) infoWindow.findViewById(R.id.tv_marker_title);
+		vt.setText(marker.getTitle());
+		vt.setBackgroundResource(MainActivity.this.getResources()
+				.getIdentifier(
+						"photo_" + marker.getObject().toString().substring(1),
+						"drawable", "com.insep.navidemo"));
 		return infoWindow;
 	}
 
@@ -512,45 +708,7 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 
 	}
 
-	public void searchRouteResult(final LatLonPoint endPoint) {
-
-		final RouteSearch.FromAndTo fromAndTo = new RouteSearch.FromAndTo(
-				curPoint, endPoint);
-		final WalkRouteQuery query = new WalkRouteQuery(fromAndTo,
-				RouteSearch.WalkDefault);
-
-		routeSearch.calculateWalkRouteAsyn(query);// 异步路径规划步行模式查询
-
-	}
-
 	// TODO implement
-	@Override
-	public void onWalkRouteSearched(final WalkRouteResult result,
-			final int rCode) {
-		if (rCode == 0) {
-			if (result != null && result.getPaths() != null
-					&& result.getPaths().size() > 0) {
-				walkRouteResult = result;
-				final WalkPath walkPath = walkRouteResult.getPaths().get(0);
-				// aMap.clear();// 清理地图上的所有覆盖物
-				walkRouteOverlay = new WalkRouteOverlay(MainActivity.this,
-						aMap, walkPath, walkRouteResult.getStartPos(),
-						walkRouteResult.getTargetPos());
-				walkRouteOverlay.removeFromMap();
-				walkRouteOverlay.addToMap();
-				walkRouteOverlay.zoomToSpan();
-			} else {
-				Toast.makeText(MainActivity.this, R.string.no_result,
-						Toast.LENGTH_LONG).show();
-			}
-		} else if (rCode == 27) {
-			Toast.makeText(MainActivity.this, R.string.network_error,
-					Toast.LENGTH_LONG).show();
-		} else {
-			Toast.makeText(MainActivity.this, rCode, Toast.LENGTH_LONG).show();
-		}
-	}
-
 	@Override
 	public void activate(OnLocationChangedListener listener) {
 		mListener = listener;
@@ -595,18 +753,6 @@ public class MainActivity extends Activity implements InfoWindowAdapter,
 
 	@Override
 	public void onProviderDisabled(String provider) {
-
-	}
-
-	@Override
-	public void onBusRouteSearched(BusRouteResult arg0, int arg1) {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void onDriveRouteSearched(DriveRouteResult arg0, int arg1) {
-		// TODO Auto-generated method stub
 
 	}
 

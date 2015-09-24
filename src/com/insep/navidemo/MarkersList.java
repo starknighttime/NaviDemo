@@ -22,6 +22,10 @@ public class MarkersList {
 	private static ArrayList<MarkerInfo> l2_stores = new ArrayList<MarkerInfo>();
 	private static ArrayList<MarkerInfo> l2_restaurants = new ArrayList<MarkerInfo>();
 	private static ArrayList<MarkerInfo> l2_washrooms = new ArrayList<MarkerInfo>();
+	private static ArrayList<MarkerInfo> l3_attractions = new ArrayList<MarkerInfo>();
+	private static ArrayList<MarkerInfo> l3_stores = new ArrayList<MarkerInfo>();
+	private static ArrayList<MarkerInfo> l3_restaurants = new ArrayList<MarkerInfo>();
+	private static ArrayList<MarkerInfo> l3_washrooms = new ArrayList<MarkerInfo>();
 	private static Resources res;
 
 	public MarkersList(Resources res) {
@@ -39,7 +43,7 @@ public class MarkersList {
 					.title(t.title)
 					.snippet(t.snippet)
 					.icon(BitmapDescriptorFactory.fromResource(res
-							.getIdentifier("landmark_" + t.description,
+							.getIdentifier("landmark_" + t.description.substring(1),
 									"drawable", "com.insep.navidemo")))
 					.draggable(false), t.description));
 		}
@@ -57,7 +61,7 @@ public class MarkersList {
 					.title(t.title)
 					.snippet(t.snippet)
 					.icon(BitmapDescriptorFactory.fromResource(res
-							.getIdentifier("landmark_" + t.description,
+							.getIdentifier("landmark_" + t.description.substring(1),
 									"drawable", "com.insep.navidemo")))
 					.draggable(false), t.description));
 		}
@@ -76,7 +80,7 @@ public class MarkersList {
 					.title(t.title)
 					.snippet(t.snippet)
 					.icon(BitmapDescriptorFactory.fromResource(res
-							.getIdentifier("landmark_" + t.description,
+							.getIdentifier("landmark_" + t.description.substring(1),
 									"drawable", "com.insep.navidemo")))
 					.draggable(false), t.description));
 		}
@@ -154,6 +158,79 @@ public class MarkersList {
 					.draggable(false).visible(false), t.description));
 		}
 		return l2_washrooms;
+	}
+	
+	public ArrayList<MarkerInfo> getL3Attractions() {
+
+		ArrayList<AttractionsAndFacilitie> temp = MarkersList
+				.getJson("l3_attractions.json");
+		int j = temp.size();
+		for (int i = 0; i < j; i++) {
+			AttractionsAndFacilitie t = temp.get(i);
+			l3_attractions.add(new MarkerInfo(new MarkerOptions()
+					.position(new LatLng(t.latitude, t.longitude))
+					.title(t.title)
+					.snippet(t.snippet)
+					.icon(BitmapDescriptorFactory.fromResource(res
+							.getIdentifier("landmark_" + t.description.substring(1),
+									"drawable", "com.insep.navidemo")))
+					.draggable(false).visible(false), t.description));
+		}
+		return l3_attractions;
+	}
+	public ArrayList<MarkerInfo> getL3Stores() {
+
+		ArrayList<AttractionsAndFacilitie> temp = MarkersList
+				.getJson("l3_stores.json");
+		int j = temp.size();
+		for (int i = 0; i < j; i++) {
+			AttractionsAndFacilitie t = temp.get(i);
+			l3_stores.add(new MarkerInfo(new MarkerOptions()
+					.position(new LatLng(t.latitude, t.longitude))
+					.title(t.title)
+					.snippet(t.snippet)
+					.icon(BitmapDescriptorFactory.fromResource(res
+							.getIdentifier("landmark_" + t.description.substring(1),
+									"drawable", "com.insep.navidemo")))
+					.draggable(false).visible(false), t.description));
+		}
+		return l3_stores;
+	}
+	public ArrayList<MarkerInfo> getL3Restaurants() {
+
+		ArrayList<AttractionsAndFacilitie> temp = MarkersList
+				.getJson("l3_restaurants.json");
+		int j = temp.size();
+		for (int i = 0; i < j; i++) {
+			AttractionsAndFacilitie t = temp.get(i);
+			l3_restaurants.add(new MarkerInfo(new MarkerOptions()
+					.position(new LatLng(t.latitude, t.longitude))
+					.title(t.title)
+					.snippet(t.snippet)
+					.icon(BitmapDescriptorFactory.fromResource(res
+							.getIdentifier("landmark_" + t.description.substring(1),
+									"drawable", "com.insep.navidemo")))
+					.draggable(false).visible(false), t.description));
+		}
+		return l3_restaurants;
+	}
+	public ArrayList<MarkerInfo> getL3Washrooms() {
+
+		ArrayList<AttractionsAndFacilitie> temp = MarkersList
+				.getJson("l3_washrooms.json");
+		int j = temp.size();
+		for (int i = 0; i < j; i++) {
+			AttractionsAndFacilitie t = temp.get(i);
+			l3_washrooms.add(new MarkerInfo(new MarkerOptions()
+					.position(new LatLng(t.latitude, t.longitude))
+					.title(t.title)
+					.snippet(t.snippet)
+					.icon(BitmapDescriptorFactory.fromResource(res
+							.getIdentifier("landmark_" + t.description.substring(1),
+									"drawable", "com.insep.navidemo")))
+					.draggable(false).visible(false), t.description));
+		}
+		return l3_washrooms;
 	}
 	// 解析JSON
 	private static ArrayList<MarkersList.AttractionsAndFacilitie> getJson(

@@ -5,7 +5,7 @@
     android:orientation="vertical" >
 
     <TextView
-        android:id="@+id/tv_l2_title"
+        android:id="@+id/tv_marker_title"
         android:layout_width="340dp"
         android:layout_height="180dp"
         android:adjustViewBounds="true"
@@ -53,8 +53,8 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:onClick="markerFuncInterpretation"
-            android:src="@drawable/icon_marker_interpretation" />
+            android:onClick="markerFuncTicket"
+            android:src="@drawable/icon_marker_ticket" />
 
         <ImageView
             android:layout_width="wrap_content"
@@ -67,8 +67,8 @@
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_weight="1"
-            android:onClick="markerFuncActivity"
-            android:src="@drawable/icon_marker_activity" />
+            android:onClick="markerFuncDescription"
+            android:src="@drawable/icon_marker_description" />
     </LinearLayout>
 
 </LinearLayout>
